@@ -103,6 +103,7 @@
                         self.setMove(move); // Effects my board
                         self.options.newTurn(move); //Broadcast oponent player's board
                     }else{
+                        alert('Its not your turn');
                         console.log('Its not your turn');
                     }
                 });

@@ -241,7 +241,8 @@ $( document ).ready(function() {
          */
         socket.on('wait', function () {
 
-            var url = "http://socket:3000/game/" + token + "/" + size + "/" + opponentSide;
+            //var url = "http://socket:3000/game/" + token + "/" + size + "/" + opponentSide;
+            var url = "http://gamespot.juanddd.com/game/" + token + "/" + size + "/" + opponentSide;
             $('#gameUrl').html(url);
             $('#gameUrlPopup').modal({ // show modal popup to wait for opponent
                 keyboard: false,
