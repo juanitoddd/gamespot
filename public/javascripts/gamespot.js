@@ -13,17 +13,17 @@ $( document ).ready(function() {
     if($("#loggedUser").length) {
         username = $("#loggedUser").data("user");
     } else {
-        username = "Anonymousss";
+        username = "Anonymous";
     }
-    console.log(io);
+
     // socket used for real time games
-    var socket = io('http://localhost:3000/', { query: 'user=' + username });
+    var socket = io('http://46.101.241.152:3000/', { query: 'user=' + username });
 
     //socket used to broadcast live games on tv page
-    var tvSocket = io('http://localhost:3000/tv');
+    var tvSocket = io('http://46.101.241.152:3000/tv');
 
     // socket used to broadcast events to monitoring page
-    var monitorSocket = io('http://localhost:3000/monitor');
+    var monitorSocket = io('http://46.101.241.152:3000/monitor');
 
     // Puzzle of the day: initialize a chess board with puzzle data
     if ($("#pod").length) {
