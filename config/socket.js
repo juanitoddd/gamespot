@@ -7,26 +7,14 @@ module.exports = function (server) {
     /*
      * live show of top rated game
      */
-    var topRatedGame = new chess.Chess(); // fake game (playing random moves). It should be a real game being played on the server
+    // var topRatedGame = new chess.Chess(); // fake game (playing random moves). It should be a real game being played on the server
 
     var tv = io.of('/tv'); // Socket to broadcast top rated game moves to index and tv pages
-
-    setInterval(function() {
-        var possibleMoves = topRatedGame.moves();
-        // if the game is over, reload a new game
-        if (topRatedGame.game_over() === true || topRatedGame.in_draw() === true || possibleMoves.length === 0) {
-            topRatedGame = new chess.Chess();
-            possibleMoves = topRatedGame.moves();
-        }
-
-        var move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-        topRatedGame.move(move);
-        tv.emit('new-top-rated-game-move', { fen: topRatedGame.fen(), pgn: topRatedGame.pgn(), turn: topRatedGame.turn() });
-    }, 3000);
-
+    /*
     tv.on('connection', function(socket){
         socket.emit('new-top-rated-game-move', { fen: topRatedGame.fen(), pgn: topRatedGame.pgn(), turn: topRatedGame.turn() });
     });
+    */
     /*
      * End of live show of top rated game
      */

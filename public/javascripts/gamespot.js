@@ -13,11 +13,11 @@ $( document ).ready(function() {
     if($("#loggedUser").length) {
         username = $("#loggedUser").data("user");
     } else {
-        username = "Anonymous";
+        username = "Anonymousss";
     }
-
+    console.log(io);
     // socket used for real time games
-    var socket = io('http://localhost:3000', { query: 'user=' + username });
+    var socket = io('http://localhost:3000/', { query: 'user=' + username });
 
     //socket used to broadcast live games on tv page
     var tvSocket = io('http://localhost:3000/tv');
@@ -329,6 +329,7 @@ $( document ).ready(function() {
     /*
      * Monitoring page
      */
+
     if ($("#monitor").length) {
 
         var nbUsers, nbGames, totalGames;
