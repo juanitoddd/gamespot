@@ -1,0 +1,32 @@
+{
+  "name": "gamespot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gamespot app",
+  "author": "Juan David Diaz",
+  "license": "MIT",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "chess.js": "^0.10.2",
+    "config": "^1.21.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "elasticsearch": "^11.0.1",
+    "express": "~4.13.4",
+    "express-session": "^1.9.1",
+    "hbs": "~4.0.0",
+    "lodash": "~4.13.1",
+    "moment": "~2.14.1",
+    "mongoose": "^3.8.17",
+    "morgan": "~1.7.0",
+    "passport": "^0.2.1",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "~2.3.0",
+    "socket.io": "~1.4.8"
+  }
+}

@@ -1,0 +1,78 @@
+<div class="row">
+
+    <div id="board" class="col-md-7" data-token="{{ token }}" data-side="{{ side }}" data-size="{{ size }}"></div>
+
+    <div id="game-details" class="col-md-4 col-md-offset-1">
+
+        <div class="panel panel-info ">
+            <div class="panel-heading">
+                <h4 class="panel-title">Players</h4>
+            </div>
+            <div class="panel-body">
+
+                <ul class="list-group">
+                    <li id="player-b" class="list-group-item">
+                        <i class="fa fa-user" style="color: #000;"></i>
+                        <!--<img src="/bower_components/chessboardjs/img/chesspieces/wikipedia/bK.png" class="side-img" alt="Black"/>-->
+                        <span id="player-black"></span> <span class="turn" id="turn-b">&nbsp;<i class=""></i></span>
+                        <span id="timeb" >{{time}}</span>
+                    </li>
+                    <li id="player-w" class="list-group-item">
+                        <i class="fa fa-user" style="color: #eee;"></i>
+                        <!--<img src="/bower_components/chessboardjs/img/chesspieces/wikipedia/wK.png" class="side-img" alt="White"/>-->
+                        <span id="player-white"></span> <span class="turn" id="turn-w">&nbsp;<i class=""></i></span>
+                        <span id="timew" >{{time}}</span>
+                    </li>
+                </ul>
+
+                <!--<p>-->
+                    <!--<i class="fa fa-user" style="color: #000;"></i>-->
+                    <!--&lt;!&ndash;<img src="/bower_components/chessboardjs/img/chesspieces/wikipedia/bK.png" class="side-img" alt="Black"/>&ndash;&gt;-->
+                    <!--<span id="player-black"></span> <span class="turn" id="turn-b">&nbsp;<i class=""></i></span>-->
+		            <!--<span id="timeb" >{{time}}</span>-->
+                <!--</p>-->
+                <!--<p>-->
+                    <!--<i class="fa fa-user" style="color: #eee;"></i>-->
+                    <!--&lt;!&ndash;<img src="/bower_components/chessboardjs/img/chesspieces/wikipedia/wK.png" class="side-img" alt="White"/>&ndash;&gt;-->
+                    <!--<span id="player-white"></span> <span class="turn" id="turn-w">&nbsp;<i class=""></i></span>-->
+		            <!--<span id="timew" >{{time}}</span>-->
+                <!--</p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="gameResultPopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Game Over</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="gameResult"></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-danger">Return to home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="gameUrlPopup" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Game URL</h4>
+                </div>
+                <div class="modal-body">
+                    <p>To invite a friend, give the following URL:</p>
+                    <p><em><span class="text-info" id="gameUrl"></span></em></p>
+                    <p>The game will be started once your friend joined the game.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
