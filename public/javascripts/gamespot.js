@@ -259,9 +259,8 @@ $( document ).ready(function() {
             timer_interval = setInterval(function(){ time_sets = timer(time_sets)}, 1000);//repeat every second
             $('#turn-w').addClass("fa fa-spinner");
             $('#player-w').addClass("active");
-            console.log(data);
-            $('#player-white').html(data.white);
-            $('#player-black').html(data.black);
+            $('#player-white').html(side == 'white' ? 'you' : data.white);
+            $('#player-black').html(side == 'black' ? 'you' : data.black);
             $('#gameUrlPopup').modal('hide');
         });
 
