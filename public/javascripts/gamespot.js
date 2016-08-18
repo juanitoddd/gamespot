@@ -1,5 +1,5 @@
-//var ws_url = 'http://46.101.241.152:3000/';
-var ws_url = 'http://socket:3000/';
+var ws_url = 'http://46.101.241.152:3000/';
+//var ws_url = 'http://socket:3000/';
 
 $( document ).ready(function() {
 
