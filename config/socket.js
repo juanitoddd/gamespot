@@ -2,23 +2,6 @@ module.exports = function (server) {
     
     var io = require('socket.io').listen(server);
 
-    var chess =  require('chess.js');
-
-    /*
-     * live show of top rated game
-     */
-    // var topRatedGame = new chess.Chess(); // fake game (playing random moves). It should be a real game being played on the server
-
-    var tv = io.of('/tv'); // Socket to broadcast top rated game moves to index and tv pages
-    /*
-    tv.on('connection', function(socket){
-        socket.emit('new-top-rated-game-move', { fen: topRatedGame.fen(), pgn: topRatedGame.pgn(), turn: topRatedGame.turn() });
-    });
-    */
-    /*
-     * End of live show of top rated game
-     */
-
     var games = {};
     var users = 0;
 
@@ -39,13 +22,11 @@ module.exports = function (server) {
 
         users++;
         monitor.emit('update', {nbUsers: users, nbGames: Object.keys(games).length});
-
         /*
          * A player joins a game
          */
         socket.on('join', function (data) {
             var room = data.token;
-
             // If the player is the first to join, initialize the game and players array
             if (!(room in games)) {
                 var players = [{

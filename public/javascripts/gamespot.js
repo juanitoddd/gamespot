@@ -1,8 +1,7 @@
-$( document ).ready(function() {
+//var ws_url = 'http://46.101.241.152:3000/';
+var ws_url = 'http://socket:3000/';
 
-    var defaultChessboardCfg = {
-        pieceTheme: '/bower_components/chessboardjs/img/chesspieces/wikipedia/{piece}.png'
-    };
+$( document ).ready(function() {
 
     /*
      * When the user is logged in, it's name is loaded in the "data" attribute of the "#loggedUser" element.
@@ -17,115 +16,13 @@ $( document ).ready(function() {
     }
 
     // socket used for real time games
-    var socket = io('http://46.101.241.152:3000/', { query: 'user=' + username });
+    var socket = io( ws_url, { query: 'user=' + username });
 
     //socket used to broadcast live games on tv page
-    var tvSocket = io('http://46.101.241.152:3000/tv');
+    var tvSocket = io( ws_url + 'tv');
 
     // socket used to broadcast events to monitoring page
-    var monitorSocket = io('http://46.101.241.152:3000/monitor');
-
-    // Puzzle of the day: initialize a chess board with puzzle data
-    if ($("#pod").length) {
-        var podChessboardCfg = _.extend(defaultChessboardCfg, {
-            position: $("#pod").data('fen')
-        });
-        var pod = new ChessBoard('pod', podChessboardCfg);
-        $('#podSolution').popover();
-    }
-
-    /*
-     * Show error message on login failure
-     */
-    if ($("#loginError").length && !$("#loginError").is(':empty')) {
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-            message: $("#loginError").html(),
-            type: 'error',
-            showCloseButton: true,
-            hideAfter: 10
-        });
-    }
-
-    /*
-     * Show error message on registration failure
-     */
-    if ($("#registerError").length && !$("#registerError").is(':empty')) {
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-            message: $("#registerError").html(),
-            type: 'error',
-            showCloseButton: true,
-            hideAfter: 10
-        });
-    }
-
-    /*
-     * Show message on successful logout
-     */
-    if ($("#logoutSuccess").length && !$("#logoutSuccess").is(':empty')) {
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-            message: $("#logoutSuccess").html(),
-            type: 'success',
-            showCloseButton: true,
-            hideAfter: 10
-        });
-    }
-
-    /*
-     * Show welcome message on registration success
-     */
-    if ($("#registerSuccess").length && !$("#registerSuccess").is(':empty')) {
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-                message: $("#registerSuccess").html(),
-                type: 'success',
-                showCloseButton: true,
-                hideAfter: 10
-            });
-    }
-
-    /*
-     * Show welcome message on login success
-     */
-    if ($("#welcomeMessage").length && !$("#welcomeMessage").is(':empty')) {
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-            message: $("#welcomeMessage").html(),
-            type: 'success',
-            showCloseButton: true,
-            hideAfter: 10
-        });
-    }
-
-    /*
-     * Show message on account update success
-     */
-    if ($("#updateStatus").length && !$("#updateStatus").is(':empty')) {
-
-        var ok = $("#updateStatus").data('ok');
-        var message = $("#updateStatus").html();
-
-        Messenger({
-            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
-        }).post({
-            message: message,
-            type: ok ? 'success' : 'error',
-            showCloseButton: true,
-            hideAfter: 10
-        });
-    }
+    var monitorSocket = io( ws_url + 'monitor');
 
     /*
      * Game page
@@ -163,6 +60,19 @@ $( document ).ready(function() {
             });
         };
 
+        var victory = function(turn) {
+            var content = side.charAt(0) == turn ? "<h1>Victory, you won!</h1>" : "<h1>Defeat, you lose!</h1>";
+            $('#gameResult').html(content);
+            $('#gameResultPopup').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+            socket.emit('victory', {
+                token: token,
+                turn : turn
+            });
+        };
+
         /*
          * Initialize a new game
          */
@@ -170,10 +80,23 @@ $( document ).ready(function() {
         var cfg = {
             size : size,
             side : side.charAt(0),
-            newTurn : newTurn
+            newTurn : newTurn,
+            victory : victory
         }
 
         var game = new Tictactoe('#board', cfg);
+
+        /*
+         * Victory for user
+         */
+        socket.on('victory', function(data){
+            var content = side.charAt(0) == data.turn ? "<h1>Victory, you won!</h1>" : "<h1>Defeat, you lose!</h1>";
+            $('#gameResult').html(content);
+            $('#gameResultPopup').modal({
+                keyboard: false,
+                backdrop: 'static'
+            });
+        });
 
         /*
          * A new move has been made by a player => update the UI
@@ -241,8 +164,7 @@ $( document ).ready(function() {
          */
         socket.on('wait', function () {
 
-            //var url = "http://socket:3000/game/" + token + "/" + size + "/" + opponentSide;
-            var url = "http://gamespot.juanddd.com/game/" + token + "/" + size + "/" + opponentSide;
+            var url = ws_url + "game/" + token + "/" + size + "/" + opponentSide;
             $('#gameUrl').html(url);
             $('#gameUrlPopup').modal({ // show modal popup to wait for opponent
                 keyboard: false,
@@ -305,25 +227,6 @@ $( document ).ready(function() {
             window.location = '/';
         });
 
-    }
-
-    /*
-     * TV page
-     */
-    if ($("#trg").length) {
-        var tvChessboardCfg = _.extend(defaultChessboardCfg, {
-            position: 'start'
-        });
-        var trg = new ChessBoard('trg', tvChessboardCfg); // initialize a chess board with the top rated live game
-        tvSocket.on('new-top-rated-game-move', function(data){
-            trg.position(data.fen);
-            if ($("#tv-game-details").length) {
-                $("#pgn").html(data.pgn);
-                $("#pgn").scrollTop($("#pgn")[0].scrollHeight);
-                $('.turn').removeClass("fa fa-spinner");
-                $('#turn-' + data.turn).addClass("fa fa-spinner");
-            }
-        });
     }
 
     /*
@@ -427,6 +330,99 @@ $( document ).ready(function() {
                 }
             });
             event.preventDefault();
+        });
+    }
+
+    /*
+     * Show error message on login failure
+     */
+    if ($("#loginError").length && !$("#loginError").is(':empty')) {
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: $("#loginError").html(),
+            type: 'error',
+            showCloseButton: true,
+            hideAfter: 10
+        });
+    }
+
+    /*
+     * Show error message on registration failure
+     */
+    if ($("#registerError").length && !$("#registerError").is(':empty')) {
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: $("#registerError").html(),
+            type: 'error',
+            showCloseButton: true,
+            hideAfter: 10
+        });
+    }
+
+    /*
+     * Show message on successful logout
+     */
+    if ($("#logoutSuccess").length && !$("#logoutSuccess").is(':empty')) {
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: $("#logoutSuccess").html(),
+            type: 'success',
+            showCloseButton: true,
+            hideAfter: 10
+        });
+    }
+
+    /*
+     * Show welcome message on registration success
+     */
+    if ($("#registerSuccess").length && !$("#registerSuccess").is(':empty')) {
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: $("#registerSuccess").html(),
+            type: 'success',
+            showCloseButton: true,
+            hideAfter: 10
+        });
+    }
+
+    /*
+     * Show welcome message on login success
+     */
+    if ($("#welcomeMessage").length && !$("#welcomeMessage").is(':empty')) {
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: $("#welcomeMessage").html(),
+            type: 'success',
+            showCloseButton: true,
+            hideAfter: 10
+        });
+    }
+
+    /*
+     * Show message on account update success
+     */
+    if ($("#updateStatus").length && !$("#updateStatus").is(':empty')) {
+
+        var ok = $("#updateStatus").data('ok');
+        var message = $("#updateStatus").html();
+
+        Messenger({
+            extraClasses: 'messenger-fixed messenger-on-right messenger-on-top'
+        }).post({
+            message: message,
+            type: ok ? 'success' : 'error',
+            showCloseButton: true,
+            hideAfter: 10
         });
     }
 });

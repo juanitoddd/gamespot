@@ -36,6 +36,11 @@
 #board .row .col-6{
     width: 14%;
 }
+#board .btn{
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    transition: 1s;
+}
 #board .btn.btn-w{
     background-color: #fff;
     border: 1px solid #ddd;

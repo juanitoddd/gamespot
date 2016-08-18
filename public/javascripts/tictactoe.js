@@ -27,6 +27,72 @@
         // ...
     };
 
+    var print = function(board){
+        for(var j = 0; j < board.length; j++){
+            var temp = "[ ";
+            for(var i = 0; i < board.length; i++){
+                temp += board[j][i] + " "
+            }
+            temp += "]";
+            console.log(temp);
+        }
+    }
+
+    var checkRows = function(board){
+        for(var j = 0; j < board.length; j++){
+            var temp = board[j][0];
+            var out = true;
+            for(var i = 0; i < board.length; i++){
+                if(board[j][i] != temp || board[j][i] == '-'){
+                    out = false;
+                    break;
+                }
+            }
+            if(out) break;
+        }
+        return out;
+    }
+
+    var checkCols = function(board){
+        for(var j = 0; j < board.length; j++){
+            var temp = board[0][j];
+            var out = true;
+            for(var i = 0; i < board.length; i++){
+                if(board[i][j] != temp || board[i][j] == '-'){
+                    out = false;
+                    break;
+                }
+            }
+            if(out) break;
+        }
+        return out;
+    }
+
+    var checkDiag = function(board){
+        var temp = board[0][0];
+        var out = true;
+        for(var j = 1; j < board.length; j++){
+            if(board[j][j] != temp || board[j][j] == '-'){
+                out = false;
+                break;
+            }
+        }
+        if(out) return true;
+
+        temp = board[0][board.length-1];
+        out = true;
+        for(var i = 1; i < board.length; i++){
+            var par = board.length - 1 - i;
+            console.log("[" + i + "," + par + "]")
+            if(board[i][par] != temp || board[i][par] == '-'){
+                out = false;
+                break;
+            }
+        }
+        if(out) return true;
+        return false;
+    }
+
     var Tictactoe = window['Tictactoe'] = window['Tictactoe'] ||  function (element, options) {
 
         this.element = $(element);
@@ -50,11 +116,12 @@
         init: function (options) {
             $.extend(this.options, options);
 
-            console.log(this.options);
-
             this.board = new Array(this.options.size);
             for (var i = 0; i < this.options.size; i++) {
                 this.board[i] = new Array(this.options.size);
+                for (var j = 0; j < this.options.size; j++) {
+                    this.board[i][j] = '-';
+                }
             }
             /*
              * Update Tictactoe for options
@@ -83,12 +150,19 @@
             button.prop('disabled', true);
             //button.html(turn); // Optional
             this.board[move[0]][move[1]] = this.getTurn();
-            this.checkWin();
+            this.moves++;
+            if(this.checkWin())
+                this.options.victory(this.getTurn());
             this.toggleTurn(); //Affects self game and broadcast.
         },
 
         checkWin : function(){
             //Check if someone won
+            if(this.moves >= 3){
+                print(this.board);
+                return checkRows(this.board) || checkCols(this.board) || checkDiag(this.board);
+            }
+            return false;
         },  
 
         // Click events
@@ -117,7 +191,7 @@
                 var row = $('<div class="row"></div>');
                 for (var j = 0; j < this.options.size; j++) {
                     var col = $('<div class="col col-' + this.options.size + '"></div>');
-                    var button = $('<button id="btn-'+i+j+'" data-index="['+i+','+j+']" class="btn btn-block">+</button>');
+                    var button = $('<button id="btn-'+i+j+'" data-index="['+i+','+j+']" class="btn btn-block">&nbsp;</button>');
                     col.append(button);
                     row.append(col);
                 }
